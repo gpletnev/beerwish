@@ -31,15 +31,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val CLIENT_ID = BuildConfig.client_id
         private val CLIENT_SECRET = BuildConfig.client_secret
         private val REDIRECT_URL = "${BuildConfig.scheme}://${BuildConfig.host}"//"ru.bigcraftday.appauth://oauth"//
-        var access_token: String? = null
+        private const val ACCESS_TOKEN_EXTRA = "ACCESS_TOKEN_EXTRA"
     }
 
     private var user = User()
+    var access_token: String? = null
     private lateinit var drawerLayout: DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState != null && savedInstanceState.containsKey("user")) {
-            user = savedInstanceState.getParcelable<User?>("user")!!
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("user")) {
+                user = savedInstanceState.getParcelable<User?>("user")!!
+            }
+            if (savedInstanceState.containsKey(ACCESS_TOKEN_EXTRA)) {
+                access_token = savedInstanceState.getString(ACCESS_TOKEN_EXTRA)
+            }
         }
 
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -57,23 +63,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         user.notifyChange()
 
         binding.navigationView.setNavigationItemSelectedListener(this)
-        with(binding.navigationView.menu.findItem(R.id.login).title) {
-            when (access_token) {
-                null -> getString(R.string.login)
-                else -> getString(R.string.logout)
-            }
+        when (access_token) {
+            null -> binding.navigationView.menu.findItem(R.id.login).title = getString(R.string.login)
+            else -> binding.navigationView.menu.findItem(R.id.login).title = getString(R.string.logout)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putParcelable("user", user)
+        outState?.putString(ACCESS_TOKEN_EXTRA, access_token)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         user = savedInstanceState?.getParcelable<User?>("user")!!
         user.notifyChange()
+        access_token = savedInstanceState.getString(ACCESS_TOKEN_EXTRA)
     }
 
     override fun onBackPressed() {
@@ -165,6 +171,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             when (result) {
                 is Result.Failure -> {
                     val ex = result.getException()
+                    Log.d("exception", "$ex")
                 }
                 is Result.Success -> {
                     val data = result.get()
@@ -185,6 +192,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             when (result) {
                 is Result.Failure -> {
                     val ex = result.getException()
+                    Log.d("exception", "$ex")
                 }
                 is Result.Success -> {
                     val data = result.get()

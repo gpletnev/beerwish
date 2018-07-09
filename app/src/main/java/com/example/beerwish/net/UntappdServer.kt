@@ -6,7 +6,7 @@ import android.support.customtabs.CustomTabsIntent
 import com.example.beerwish.App
 import com.example.beerwish.BuildConfig
 
-class UntappdRequests(val context: Context = App.instance) {
+class UntappdServer(val context: Context = App.instance) {
 
     companion object {
         private const val API_END_POINT = "https://api.untappd.com/v4/"
