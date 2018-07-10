@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="user"
-            type="com.example.beerwish.data.User" />
+            name="userViewModel"
+            type="com.example.beerwish.viewmodels.UserViewModel" />
     </data>
 
     <RelativeLayout
@@ -23,7 +23,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:padding="@dimen/navigation_drawer_header_padding"
-            android:text="@{@string/name_format(user.first_name, user.last_name)}"
+            android:text="@{userViewModel.getFullName()}"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <ImageView
@@ -33,7 +33,7 @@
             android:layout_below="@id/user_full_name"
             android:layout_alignParentStart="true"
             android:contentDescription="@string/nav_header_desc"
-            app:srcCompat="@{user.user_avatar}" />
+            app:srcCompat="@{userViewModel.user.user_avatar}" />
 
         <TextView
             android:id="@+id/user_name"
@@ -44,7 +44,7 @@
             android:paddingStart="@dimen/navigation_drawer_header_padding"
             android:paddingEnd="@dimen/navigation_drawer_header_padding"
             android:paddingBottom="@dimen/navigation_drawer_header_padding"
-            android:text="@{user.user_name}"
+            android:text="@{userViewModel.user.user_name}"
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
@@ -56,18 +56,7 @@
             android:paddingStart="@dimen/navigation_drawer_header_padding"
             android:paddingEnd="@dimen/navigation_drawer_header_padding"
             android:paddingBottom="@dimen/navigation_drawer_header_padding"
-            android:text="@{user.location}"
-            android:textAppearance="@style/TextAppearance.AppCompat" />
-
-        <TextView
-            android:id="@+id/url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/location"
-            android:layout_toEndOf="@id/user_avatar"
-            android:paddingStart="@dimen/navigation_drawer_header_padding"
-            android:paddingEnd="@dimen/navigation_drawer_header_padding"
-            android:text="@{user.url}"
+            android:text="@{userViewModel.user.location}"
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
     </RelativeLayout>

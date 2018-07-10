@@ -1,5 +1,6 @@
 package com.example.beerwish
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.net.Uri
@@ -13,14 +14,15 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.example.beerwish.data.User
+import com.example.beerwish.data.remote.model.User
 import com.example.beerwish.databinding.ActivityMainBinding
 import com.example.beerwish.databinding.NavigationHeaderBinding
+import com.example.beerwish.viewmodels.UserViewModel
 import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.navigation_header.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -34,15 +36,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private const val ACCESS_TOKEN_EXTRA = "ACCESS_TOKEN_EXTRA"
     }
 
-    private var user = User()
+    //private var user = User()
     var access_token: String? = null
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var userViewModel: UserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("user")) {
+            /*if (savedInstanceState.containsKey("user")) {
                 user = savedInstanceState.getParcelable<User?>("user")!!
-            }
+            }*/
             if (savedInstanceState.containsKey(ACCESS_TOKEN_EXTRA)) {
                 access_token = savedInstanceState.getString(ACCESS_TOKEN_EXTRA)
             }
@@ -57,10 +60,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 this, drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel::class.java)
         val navigationHeaderBinding: NavigationHeaderBinding =
                 DataBindingUtil.inflate(layoutInflater, R.layout.navigation_header, binding.navigationView, true)
-        navigationHeaderBinding.user = user
-        user.notifyChange()
+        navigationHeaderBinding.userViewModel = userViewModel
 
         binding.navigationView.setNavigationItemSelectedListener(this)
         when (access_token) {
@@ -71,15 +75,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putParcelable("user", user)
+        //outState?.putParcelable("user", user)
         outState?.putString(ACCESS_TOKEN_EXTRA, access_token)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        user = savedInstanceState?.getParcelable<User?>("user")!!
-        user.notifyChange()
-        access_token = savedInstanceState.getString(ACCESS_TOKEN_EXTRA)
+        //user = savedInstanceState?.getParcelable<User?>("user")!!
+        //user.notifyChange()
+        access_token = savedInstanceState?.getString(ACCESS_TOKEN_EXTRA)
     }
 
     override fun onBackPressed() {
@@ -114,8 +118,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     null -> requestCode()
                     else -> {
                         access_token = null
-                        user = User()
-                        user.notifyChange()
+                        /*user = User()
+                        user.notifyChange()*/
                         //nav_view.navigation_header.visibility = View.GONE
                         item.title = getString(R.string.login)
                     }
@@ -197,18 +201,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 is Result.Success -> {
                     val data = result.get()
                     val userJson = Json(data).obj().getJSONObject("response").getJSONObject("user")
-                    with(userJson) {
-                        user.apply {
-                            first_name = getString("first_name")
-                            last_name = getString("last_name")
-                            user_avatar = getString("user_avatar")
-                            user_name = getString("user_name")
-                            location = getString("location")
-                            url = getString("url")
-                            navigation_view.menu.findItem(R.id.login).title = getString(R.string.logout)
-                            notifyChange()
-                        }
-                    }
+                    val user = Gson().fromJson(userJson.toString(), User::class.java)
+                    userViewModel.user.value = user
+                    userViewModel.notifyChange()
+                    navigation_view.menu.findItem(R.id.login).title = getString(R.string.logout)
                 }
             }
         }
