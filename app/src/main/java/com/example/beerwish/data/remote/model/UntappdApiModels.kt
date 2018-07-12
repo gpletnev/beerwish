@@ -26,7 +26,11 @@ data class User (
         val last_name: String,
         val user_avatar: String,
         val location: String
-)
+) {
+    fun getFullName(): String {
+        return "${first_name} ${last_name}"
+    }
+}
 
 data class Beer (
         val bid: Int,
@@ -52,5 +56,12 @@ data class Media (
 
 data class Photo (
         val photo_id: Int,
-        val photo: List<String>
+        val photo: PhotoImg
+)
+
+data class PhotoImg(
+        val photo_img_sm: String,
+        val photo_img_md: String,
+        val photo_img_lg: String,
+        val photo_img_og: String
 )

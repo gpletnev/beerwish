@@ -11,4 +11,7 @@
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="name_format">%s %s</string>
+    <string name="feed_title">Friends Feed</string>
+    <string name="checkin_photo">Checkin photo</string>
+    <string name="checkin_description">%s is drinking a %s by %s at %s</string>
 </resources>

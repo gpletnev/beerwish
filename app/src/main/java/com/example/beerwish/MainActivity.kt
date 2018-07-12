@@ -19,10 +19,12 @@ import com.example.beerwish.databinding.ActivityMainBinding
 import com.example.beerwish.databinding.NavigationHeaderBinding
 import com.example.beerwish.viewmodels.UserViewModel
 import com.github.kittinunf.fuel.android.core.Json
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,20 +34,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val AUTHORIZE_END_POINT = "https://untappd.com/oauth/authorize/"
         private val CLIENT_ID = BuildConfig.client_id
         private val CLIENT_SECRET = BuildConfig.client_secret
-        private val REDIRECT_URL = "${BuildConfig.scheme}://${BuildConfig.host}"//"ru.bigcraftday.appauth://oauth"//
-        private const val ACCESS_TOKEN_EXTRA = "ACCESS_TOKEN_EXTRA"
+        private val REDIRECT_URL = "${BuildConfig.scheme}://${BuildConfig.host}"
+        const val ACCESS_TOKEN_EXTRA = "ACCESS_TOKEN_EXTRA"
     }
 
-    //private var user = User()
     var access_token: String? = null
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var userViewModel: UserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            /*if (savedInstanceState.containsKey("user")) {
-                user = savedInstanceState.getParcelable<User?>("user")!!
-            }*/
             if (savedInstanceState.containsKey(ACCESS_TOKEN_EXTRA)) {
                 access_token = savedInstanceState.getString(ACCESS_TOKEN_EXTRA)
             }
@@ -71,18 +69,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             null -> binding.navigationView.menu.findItem(R.id.login).title = getString(R.string.login)
             else -> binding.navigationView.menu.findItem(R.id.login).title = getString(R.string.logout)
         }
+
+        if (supportFragmentManager.findFragmentByTag(FeedFragment::class.java.simpleName) == null) {
+            val fragment = FeedFragment()
+
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, fragment, FeedFragment::class.java.simpleName).commit()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        //outState?.putParcelable("user", user)
         outState?.putString(ACCESS_TOKEN_EXTRA, access_token)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        //user = savedInstanceState?.getParcelable<User?>("user")!!
-        //user.notifyChange()
         access_token = savedInstanceState?.getString(ACCESS_TOKEN_EXTRA)
     }
 
@@ -118,9 +120,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     null -> requestCode()
                     else -> {
                         access_token = null
-                        /*user = User()
-                        user.notifyChange()*/
-                        //nav_view.navigation_header.visibility = View.GONE
+                        FuelManager.instance.baseParams = listOf()
                         item.title = getString(R.string.login)
                     }
                 }
@@ -181,6 +181,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val data = result.get()
                     access_token = Json(data).obj().getJSONObject("response").get("access_token").toString()
                     Log.d("access_token", "$access_token")
+                    FuelManager.instance.baseParams = listOf("access_token" to access_token)
                     requestUserInfo()
                 }
             }
@@ -188,8 +189,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun requestUserInfo() {
-        val userInfoUri = "${API_END_POINT}user/info?access_token=$access_token&compact=true"
-        userInfoUri.httpGet().responseString() { request, response, result ->
+        val userInfoUri = "${API_END_POINT}user/info"
+        userInfoUri.httpGet(listOf("compact" to true)).responseString() { request, response, result ->
             Log.d("request", "$request")
             Log.d("response", "$response")
             Log.d("result", "$result")
@@ -205,6 +206,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     userViewModel.user.value = user
                     userViewModel.notifyChange()
                     navigation_view.menu.findItem(R.id.login).title = getString(R.string.logout)
+                    val feedFragment = supportFragmentManager.findFragmentByTag(FeedFragment::class.java.simpleName) as FeedFragment
+                    feedFragment.requestFriendsFeed()
                 }
             }
         }
