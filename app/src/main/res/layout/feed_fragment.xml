@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/margin_normal"
+        android:paddingRight="@dimen/margin_normal"
+        tools:context=".FeedFragment">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/search"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/feed_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="end" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/feed_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/search"
+            android:clipToPadding="false"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:context="com.example.beerwish.MainActivity"
+            tools:listitem="@layout/list_item_checkin" />
+
+    </RelativeLayout>
+</layout>
