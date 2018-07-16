@@ -5,14 +5,12 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.beerwish.MainActivity.Companion.ACCESS_TOKEN_EXTRA
 import com.example.beerwish.adapters.CheckinAdapter
-import com.example.beerwish.data.remote.model.Checkin
 import com.example.beerwish.data.remote.model.Checkins
 import com.example.beerwish.net.UntappdServer
 import com.example.beerwish.viewmodels.FeedViewModel
@@ -21,6 +19,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.feed_fragment.view.*
 
 
 class FeedFragment : Fragment() {
@@ -37,14 +36,31 @@ class FeedFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(FeedViewModel::class.java)
 
         val adapter = CheckinAdapter()
-        val feedList = view.findViewById<RecyclerView>(R.id.feed_list)
+        val feedList = view.feed_list
         feedList.adapter = adapter
         feedList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 
 
-        viewModel.checkinList.observe(viewLifecycleOwner, Observer { checkins ->
-            if (checkins != null) adapter.submitList(checkins)
+        viewModel.checkinList.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(viewModel.filteredList())
         })
+
+        viewModel.searchQuery.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(viewModel.filteredList())
+        })
+
+        view.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.searchQuery.value = query
+                return true
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                viewModel.searchQuery.value = query
+                return true
+            }
+        })
+
         return view
     }
 

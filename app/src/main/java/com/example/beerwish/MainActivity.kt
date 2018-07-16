@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 access_token = savedInstanceState.getString(ACCESS_TOKEN_EXTRA)
             }
         }
+        if (access_token == null) FuelManager.instance.baseParams = listOf()
 
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
@@ -178,7 +179,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Log.d("exception", "$ex")
                 }
                 is Result.Success -> {
-                    val data = result.get()
+                    val data = result.get().replace("[]", "")
                     access_token = Json(data).obj().getJSONObject("response").get("access_token").toString()
                     Log.d("access_token", "$access_token")
                     FuelManager.instance.baseParams = listOf("access_token" to access_token)
