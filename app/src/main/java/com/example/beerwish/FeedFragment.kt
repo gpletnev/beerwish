@@ -65,7 +65,12 @@ class FeedFragment : Fragment() {
     }
 
     fun requestFriendsFeed() {
-        if (FuelManager.instance.baseParams.isEmpty()) return
+        if (FuelManager.instance.baseParams.isEmpty()) {
+            viewModel.checkinList.value = null
+            viewModel.searchQuery.value = null
+            viewModel.notifyChange()
+            return
+        }
 
         val userInfoUri = "${UntappdServer.API_END_POINT}checkin/recent"//access_token=${access_token}"//&limit=10"
         userInfoUri.httpGet().responseString() { request, response, result ->

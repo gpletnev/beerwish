@@ -43,12 +43,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var userViewModel: UserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(ACCESS_TOKEN_EXTRA)) {
-                access_token = savedInstanceState.getString(ACCESS_TOKEN_EXTRA)
-            }
-        }
-        if (access_token == null) FuelManager.instance.baseParams = listOf()
+        access_token = savedInstanceState?.getString(ACCESS_TOKEN_EXTRA)
+
+        access_token = access_token ?: FuelManager.instance.baseParams.find { pair: Pair<String, Any?> -> pair.first == "access_token" }?.second as String?
 
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
@@ -66,9 +63,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationHeaderBinding.userViewModel = userViewModel
 
         binding.navigationView.setNavigationItemSelectedListener(this)
-        when (access_token) {
-            null -> binding.navigationView.menu.findItem(R.id.login).title = getString(R.string.login)
-            else -> binding.navigationView.menu.findItem(R.id.login).title = getString(R.string.logout)
+
+        if (access_token != null) {
+            binding.navigationView.menu.findItem(R.id.login).title = getString(R.string.logout)
         }
 
         if (supportFragmentManager.findFragmentByTag(FeedFragment::class.java.simpleName) == null) {
@@ -77,6 +74,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             supportFragmentManager.beginTransaction()
                     .add(R.id.fragment_container, fragment, FeedFragment::class.java.simpleName).commit()
         }
+
+        if (access_token != null && userViewModel.user.value == null) requestUserInfo()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -123,6 +122,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         access_token = null
                         FuelManager.instance.baseParams = listOf()
                         item.title = getString(R.string.login)
+                        userViewModel.user.value = null
+                        userViewModel.notifyChange()
+                        val feedFragment = supportFragmentManager.findFragmentByTag(FeedFragment::class.java.simpleName) as FeedFragment
+                        feedFragment.requestFriendsFeed()
                     }
                 }
             }
