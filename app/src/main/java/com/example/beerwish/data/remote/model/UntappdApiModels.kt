@@ -1,14 +1,14 @@
 package com.example.beerwish.data.remote.model
 
-data class ServerResponse<T>(var meta : Meta, var response: Response<T>)
+data class ServerResponse<T>(var meta: Meta, var response: Response<T>)
 
-data class Meta(var code : Int)
+data class Meta(var code: Int)
 
 data class Response<T>(val response: T)
 
 data class Checkins(val count: Int, val items: List<Checkin>)
 
-data class Checkin (
+data class Checkin(
         val checkin_id: Int,
         val created_at: String,
         val checkin_comment: String,
@@ -19,7 +19,7 @@ data class Checkin (
         val media: Media
 )
 
-data class User (
+data class User(
         val uid: Int,
         val user_name: String,
         val first_name: String,
@@ -32,29 +32,29 @@ data class User (
     }
 }
 
-data class Beer (
+data class Beer(
         val bid: Int,
         val beer_name: String,
         val beer_label: String,
         val beer_style: String
 )
 
-data class Brewery (
+data class Brewery(
         val brewery_id: Int,
         val brewery_name: String
 )
 
-data class Venue (
+data class Venue(
         val venue_id: Int,
         val venue_name: String
 )
 
-data class Media (
+data class Media(
         val count: Int,
         val items: List<Photo>
 )
 
-data class Photo (
+data class Photo(
         val photo_id: Int,
         val photo: PhotoImg
 )

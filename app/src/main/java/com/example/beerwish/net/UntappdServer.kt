@@ -2,16 +2,9 @@ package com.example.beerwish.net
 
 import android.content.Context
 import android.net.Uri
-import android.support.customtabs.CustomTabsIntent
-import android.util.Log
+import androidx.browser.customtabs.CustomTabsIntent
 import com.example.beerwish.App
 import com.example.beerwish.BuildConfig
-import com.example.beerwish.data.remote.model.Checkin
-import com.example.beerwish.data.remote.model.Checkins
-import com.github.kittinunf.fuel.android.core.Json
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
-import com.google.gson.Gson
 
 class UntappdServer(val context: Context = App.instance) {
 

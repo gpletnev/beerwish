@@ -1,6 +1,6 @@
 package com.example.beerwish.viewmodels
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.beerwish.data.remote.model.User
 
 class UserViewModel(

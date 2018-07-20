@@ -1,19 +1,18 @@
 package com.example.beerwish
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
-import android.support.customtabs.CustomTabsIntent
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProviders
 import com.example.beerwish.data.remote.model.User
 import com.example.beerwish.databinding.ActivityMainBinding
 import com.example.beerwish.databinding.NavigationHeaderBinding
@@ -22,6 +21,7 @@ import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun requestToken(code: String) {
         val authorize = "$AUTHORIZE_END_POINT?client_id=$CLIENT_ID&response_type=code&redirect_url=$REDIRECT_URL&client_secret=$CLIENT_SECRET&code=$code"
-        authorize.httpGet().responseString() { request, response, result ->
+        authorize.httpGet().responseString { request, response, result ->
             Log.d("request", "$request")
             Log.d("response", "$response")
             Log.d("result", "$result")
@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun requestUserInfo() {
         val userInfoUri = "${API_END_POINT}user/info"
-        userInfoUri.httpGet(listOf("compact" to true)).responseString() { request, response, result ->
+        userInfoUri.httpGet(listOf("compact" to true)).responseString { request, response, result ->
             Log.d("request", "$request")
             Log.d("response", "$response")
             Log.d("result", "$result")

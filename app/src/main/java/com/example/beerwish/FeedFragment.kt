@@ -1,15 +1,15 @@
 package com.example.beerwish
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.SearchView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.beerwish.adapters.CheckinAdapter
 import com.example.beerwish.data.remote.model.Checkins
 import com.example.beerwish.net.UntappdServer
@@ -73,7 +73,7 @@ class FeedFragment : Fragment() {
         }
 
         val userInfoUri = "${UntappdServer.API_END_POINT}checkin/recent"//access_token=${access_token}"//&limit=10"
-        userInfoUri.httpGet().responseString() { request, response, result ->
+        userInfoUri.httpGet().responseString { request, response, result ->
             Log.d("request", "$request")
             Log.d("response", "$response")
             Log.d("result", "$result")

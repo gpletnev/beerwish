@@ -1,10 +1,10 @@
 package com.example.beerwish.viewmodels
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.beerwish.data.remote.model.Checkin
 
 
-class FeedViewModel() : ObservableViewModel() {
+class FeedViewModel : ObservableViewModel() {
     val searchQuery = MutableLiveData<String>()
     val checkinList = MutableLiveData<List<Checkin>>()
 

@@ -28,8 +28,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/scheme"
-                    android:host="@string/host" />
+                    android:host="@string/host"
+                    android:scheme="@string/scheme" />
             </intent-filter>
         </activity>
     </application>
