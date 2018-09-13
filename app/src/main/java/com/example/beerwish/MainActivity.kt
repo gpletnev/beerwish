@@ -9,6 +9,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -24,6 +25,8 @@ import com.github.kittinunf.result.Result
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.startActivity
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +50,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         access_token = access_token ?: FuelManager.instance.baseParams.find { pair: Pair<String, Any?> -> pair.first == "access_token" }?.second as String?
 
+        if (defaultSharedPreferences.getBoolean("access_token_key", false)) {
+            access_token = access_token ?: defaultSharedPreferences.getString("access_token", null)
+        }
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
 
@@ -75,7 +81,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .add(R.id.fragment_container, fragment, FeedFragment::class.java.simpleName).commit()
         }
 
-        if (access_token != null && userViewModel.user.value == null) requestUserInfo()
+        if (access_token != null && userViewModel.user.value == null) {
+            FuelManager.instance.baseParams = listOf("access_token" to access_token)
+            requestUserInfo()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -107,7 +116,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_settings -> return true
+            R.id.action_settings -> {
+                startActivity<SettingsActivity>()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -120,7 +132,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     null -> requestCode()
                     else -> {
                         access_token = null
-                        FuelManager.instance.baseParams = listOf()
+                        defaultSharedPreferences.edit { remove("access_token") }
+                        FuelManager.instance.baseParams = emptyList()
                         item.title = getString(R.string.login)
                         userViewModel.user.value = null
                         userViewModel.notifyChange()
@@ -185,6 +198,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val data = result.get().replace("[]", "")
                     access_token = Json(data).obj().getJSONObject("response").get("access_token").toString()
                     Log.d("access_token", "$access_token")
+
+                    if (defaultSharedPreferences.getBoolean("access_token_key", false)) {
+                        defaultSharedPreferences.edit {
+                            putString("access_token", access_token)
+                        }
+                    }
                     FuelManager.instance.baseParams = listOf("access_token" to access_token)
                     requestUserInfo()
                 }

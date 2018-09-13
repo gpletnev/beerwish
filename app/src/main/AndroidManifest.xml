@@ -3,6 +3,7 @@
     package="com.example.beerwish">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -32,6 +33,10 @@
                     android:scheme="@string/scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/label_activity_settings"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="access_token_key"
+        android:summary="@string/pref_description_store_user"
+        android:title="@string/pref_title_store_user" />
+</PreferenceScreen>
