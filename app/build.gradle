@@ -13,6 +13,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         debug {
             buildConfigField 'String', 'client_id', untappd_client_id
@@ -28,26 +29,39 @@ android {
             buildConfigFields
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     dataBinding {
         enabled = true
     }
 }
 
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.anko:anko:$anko_version"
-    implementation "androidx.core:core-ktx:$ktxVersion"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha1'
-    implementation 'androidx.browser:browser:1.0.0-beta01'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
+    implementation 'org.jetbrains.anko:anko:0.10.5'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61'
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
+    implementation 'androidx.browser:browser:1.0.0-rc02'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'androidx.core:core-ktx:1.0.0-rc02'
+    implementation 'androidx.fragment:fragment-ktx:1.0.0-rc02'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
+    implementation 'androidx.preference:preference:1.0.0-rc02'
     implementation 'com.github.bumptech.glide:glide:4.4.0'
+    implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
+    implementation 'com.google.android.material:material:1.0.0-rc02'
+    implementation 'com.google.code.gson:gson:2.8.2'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha3'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 }

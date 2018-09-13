@@ -14,4 +14,9 @@
     <string name="feed_title">Friends Feed</string>
     <string name="checkin_photo">Checkin photo</string>
     <string name="checkin_description">%s is drinking a %s by %s at %s</string>
+
+    <string name="label_activity_settings">Settings</string>
+    <string name="pref_title_store_user">Store access token</string>
+    <string name="pref_description_store_user">After login user\'s untapped access token may stored for next sessions. It is removed after logout</string>
+
 </resources>
