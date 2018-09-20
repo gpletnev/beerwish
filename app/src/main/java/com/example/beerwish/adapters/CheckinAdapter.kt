@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -30,9 +31,16 @@ class CheckinAdapter : ListAdapter<Checkin, CheckinAdapter.ViewHolder>(CheckinDi
     private fun createOnClickListener(position: Int): View.OnClickListener {
         return View.OnClickListener {
             getItem(position).let {
-                startActivity(App.instance,
-                        Intent(Intent.ACTION_VIEW,
-                                Uri.parse("https://www.untappd.com/user/${it.user.user_name}/checkin/${it.checkin_id}")), null)
+                val appIntent = Intent(Intent.ACTION_VIEW,
+                        // Open check-in detail in untappd app
+                        "untappd://checkin/${it.checkin_id}".toUri())
+                val webIntent = Intent(Intent.ACTION_VIEW,
+                        // Open check-in in web
+                        "https://www.untappd.com/user/${it.user.user_name}/checkin/${it.checkin_id}".toUri())
+                if (App.instance.packageManager.queryIntentActivities(appIntent, 0).size > 0)
+                    startActivity(App.instance, appIntent, null)
+                else
+                    startActivity(App.instance, webIntent, null)
             }
         }
     }
