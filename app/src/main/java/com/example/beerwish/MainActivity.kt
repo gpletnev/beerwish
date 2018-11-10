@@ -3,6 +3,7 @@ package com.example.beerwish
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -87,8 +88,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
         outState?.putString(ACCESS_TOKEN_EXTRA, access_token)
     }
 
@@ -156,7 +157,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             with(intent) {
                 if (action == Intent.ACTION_VIEW && hasCategory(Intent.CATEGORY_BROWSABLE)) {
-                    if (data?.scheme == BuildConfig.scheme) {
+                    if (data != null && data.scheme == BuildConfig.scheme) {
                         with(data.toString()) {
                             when {
                                 contains("code=") -> {
