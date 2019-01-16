@@ -185,8 +185,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun requestToken(code: String) {
         val authorize = "$AUTHORIZE_END_POINT?client_id=$CLIENT_ID&response_type=code&redirect_url=$REDIRECT_URL&client_secret=$CLIENT_SECRET&code=$code"
-        authorize.httpGet().responseString { request, response, result ->
-            Log.d("request", "$request")
+        authorize.httpGet().responseString { _, response, result ->
             Log.d("response", "$response")
             Log.d("result", "$result")
             when (result) {
@@ -213,8 +212,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun requestUserInfo() {
         val userInfoUri = "${API_END_POINT}user/info"
-        userInfoUri.httpGet(listOf("compact" to true)).responseString { request, response, result ->
-            Log.d("request", "$request")
+        userInfoUri.httpGet(listOf("compact" to true)).responseString { _, response, result ->
             Log.d("response", "$response")
             Log.d("result", "$result")
             when (result) {
