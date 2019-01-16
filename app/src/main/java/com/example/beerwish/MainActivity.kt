@@ -157,21 +157,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             with(intent) {
                 if (action == Intent.ACTION_VIEW && hasCategory(Intent.CATEGORY_BROWSABLE)) {
-                    if (data != null && data.scheme == BuildConfig.scheme) {
-                        with(data.toString()) {
-                            when {
-                                contains("code=") -> {
-                                    val code = substringAfter("code=").substringBefore("&")
-                                    requestToken(code)
-                                }
-                                contains("access_token=") -> {
-                                    val access_token = substringAfter("access_token=").substringBefore("&")
-                                    Log.d("access_token", access_token)
-                                }
-                                else -> {
-                                }
+                    if (data?.scheme == BuildConfig.scheme) {
+                        val queries : MutableSet<String> = data!!.queryParameterNames
+                        when {
+                            queries.contains("code") -> {
+                                val code = data?.getQueryParameter("code")!!
+                                requestToken(code)
+                            }
+                            queries.contains("access_token") -> {
+                                val access_token = data?.getQueryParameter("access_token")!!
+                                println(access_token)
+                                requestCode()
                             }
                         }
+
                     }
                 }
             }
