@@ -34,12 +34,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     companion object {
         private const val API_END_POINT = "https://api.untappd.com/v4/"
-        private val TOKEN_AUTH = "https://untappd.com/oauth/authenticate/"
-        private val AUTHORIZE_END_POINT = "https://untappd.com/oauth/authorize/"
-        private val CLIENT_ID = BuildConfig.client_id
-        private val CLIENT_SECRET = BuildConfig.client_secret
-        private val REDIRECT_URL = "${BuildConfig.scheme}://${BuildConfig.host}"
-        const val ACCESS_TOKEN_EXTRA = "ACCESS_TOKEN_EXTRA"
+        private const val TOKEN_AUTH = "https://untappd.com/oauth/authenticate/"
+        private const val AUTHORIZE_END_POINT = "https://untappd.com/oauth/authorize/"
+        private const val CLIENT_ID = BuildConfig.client_id
+        private const val CLIENT_SECRET = BuildConfig.client_secret
+        private const val REDIRECT_URL = "${BuildConfig.scheme}://${BuildConfig.host}"
+        private const val ACCESS_TOKEN_EXTRA = "ACCESS_TOKEN_EXTRA"
     }
 
     var access_token: String? = null
